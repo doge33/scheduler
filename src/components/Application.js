@@ -32,7 +32,7 @@ const interviewers = [
 export default function Application(props) {
 
   const [day, setDay] = useState("Monday");
-  const [selectedInterviewer, setSelectedInterviewer] = useState(interviewers[2].name);
+  //const [selectedInterviewer, setSelectedInterviewer] = useState(interviewers[2].name);
 
   return (
     <main className="layout">
@@ -53,13 +53,19 @@ export default function Application(props) {
           />
       </section>
       <section className="schedule">
-        <h1>Interview Schedules</h1>
+        
+        
+        
+      </section>
+    </main>
+  );
+}
+
+/*
+<h1>Interview Schedules</h1>
         <InterviewerList 
           interviewers={interviewers}
           selectedInterviewer={selectedInterviewer}
           setSelectedInterviewer={setSelectedInterviewer}
         />
-      </section>
-    </main>
-  );
-}
+*/
