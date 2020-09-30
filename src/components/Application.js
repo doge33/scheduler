@@ -1,6 +1,7 @@
 import React, { useState} from "react";
 import DayList from "./DayList";
 import InterviewerList from "./InterviewerList";
+import Appointment from "./Appointment/index";
 
 import "components/Application.scss";
 
@@ -21,7 +22,7 @@ const days = [
     spots: 0,
   },
 ];
-
+/*
 const interviewers = [
   { id: 1, name: "Sylvia Palmer", avatar: "https://i.imgur.com/LpaY82x.png" },
   { id: 2, name: "Tori Malcolm", avatar: "https://i.imgur.com/Nmx0Qxo.png" },
@@ -29,6 +30,48 @@ const interviewers = [
   { id: 4, name: "Cohana Roy", avatar: "https://i.imgur.com/FK8V841.jpg" },
   { id: 5, name: "Sven Jones", avatar: "https://i.imgur.com/twYrpay.jpg" }
 ];
+*/
+
+const appointments = [
+  {
+    id: 1,
+    time: "12pm",
+  },
+  {
+    id: 2,
+    time: "1pm",
+    interview: {
+      student: "Lydia Miller-Jones",
+      interviewer: {
+        id: 1,
+        name: "Sylvia Palmer",
+        avatar: "https://i.imgur.com/LpaY82x.png",
+      }
+    }
+  },
+  {
+    id: 3,
+    time: "2pm",
+  },
+  {
+    id: "4",
+    time: "3pm",
+    interview: {
+      student: "Harry Potter",
+      interviewer: {
+        id: 4,
+        name: "Cohana Roy",
+        avatar: "https://i.imgur.com/FK8V841.jpg",
+      }
+    }
+  },
+  {
+    id: "last",
+    time: "4pm",
+  }
+
+];
+
 export default function Application(props) {
 
   const [day, setDay] = useState("Monday");
@@ -53,9 +96,18 @@ export default function Application(props) {
           />
       </section>
       <section className="schedule">
-        
-        
-        
+        <ul>
+        {appointments.map((appointment) => {
+          console.log("in mapping of appointments in Application; ")
+
+          return (
+          <Appointment 
+            key={appointment.id}
+            {...appointment}
+            />
+        )}
+        )}    
+        </ul>
       </section>
     </main>
   );
