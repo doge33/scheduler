@@ -1,27 +1,19 @@
-import React, { useState} from "react";
+import React, { useState, useEffect} from "react";
+import axios from "axios";
+
 import DayList from "./DayList";
-import InterviewerList from "./InterviewerList";
+//import InterviewerList from "./InterviewerList";
 import Appointment from "./Appointment/index";
 
 import "components/Application.scss";
+/*
+const HttpsProxyAgent = require('https-proxy-agent');
+const httpsAgent = new HttpsProxyAgent({host: "localhost", port: "8001"})
+//let axios = require("axios");
+const axiosFixed = axios.create({httpsAgent});
+*/
+/*
 
-const days = [
-  {
-    id: 1,
-    name: "Monday",
-    spots: 2,
-  },
-  {
-    id: 2,
-    name: "Tuesday",
-    spots: 5,
-  },
-  {
-    id: 3,
-    name: "Wednesday",
-    spots: 0,
-  },
-];
 /*
 const interviewers = [
   { id: 1, name: "Sylvia Palmer", avatar: "https://i.imgur.com/LpaY82x.png" },
@@ -72,10 +64,27 @@ const appointments = [
 
 ];
 
+
+
 export default function Application(props) {
 
   const [day, setDay] = useState("Monday");
+  const [days, setDays] = useState([]);
   //const [selectedInterviewer, setSelectedInterviewer] = useState(interviewers[2].name);
+
+  useEffect(() => {
+
+    //const axiosFixed=require("axios-https-proxy-fix").create(axiosDefaultConfig)
+    
+
+    axios.get("http://localhost:8001/api/days")
+    .then(res => {
+      console.log(res.data);
+      setDays(res.data)
+    })
+    .catch(err => console.log("caught error ---", err.message))
+
+  }, [])
 
   return (
     <main className="layout">
