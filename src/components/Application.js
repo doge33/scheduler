@@ -4,62 +4,11 @@ import axios from "axios";
 import DayList from "./DayList";
 //import InterviewerList from "./InterviewerList";
 import Appointment from "./Appointment/index";
-import getAppointmentsForDay from "../helpers/selectors";
+import {getAppointmentsForDay, getInterview} from "../helpers/selectors";
 
 import "components/Application.scss";
 
 axios.defaults.baseURL = "http://localhost:8001"
-
-
-/*
-const interviewers = [
-  { id: 1, name: "Sylvia Palmer", avatar: "https://i.imgur.com/LpaY82x.png" },
-  { id: 2, name: "Tori Malcolm", avatar: "https://i.imgur.com/Nmx0Qxo.png" },
-  { id: 3, name: "Mildred Nazir", avatar: "https://i.imgur.com/T2WwVfS.png" },
-  { id: 4, name: "Cohana Roy", avatar: "https://i.imgur.com/FK8V841.jpg" },
-  { id: 5, name: "Sven Jones", avatar: "https://i.imgur.com/twYrpay.jpg" }
-];
-*/
-
-const appointmentsHardCode = [
-  {
-    id: 1,
-    time: "12pm",
-  },
-  {
-    id: 2,
-    time: "1pm",
-    interview: {
-      student: "Lydia Miller-Jones",
-      interviewer: {
-        id: 1,
-        name: "Sylvia Palmer",
-        avatar: "https://i.imgur.com/LpaY82x.png",
-      }
-    }
-  },
-  {
-    id: 3,
-    time: "2pm",
-  },
-  {
-    id: "4",
-    time: "3pm",
-    interview: {
-      student: "Harry Potter",
-      interviewer: {
-        id: 4,
-        name: "Cohana Roy",
-        avatar: "https://i.imgur.com/FK8V841.jpg",
-      }
-    }
-  },
-  {
-    id: "last",
-    time: "4pm",
-  }
-
-];
 
 
 
@@ -72,7 +21,8 @@ export default function Application(props) {
     days: [],
     interviewers: [],
   })
-  const dailyAppointments = getAppointmentsForDay(state, state.day)
+  
+  
   //const state = {day: "Monday", days: []};
   //setState({...state, day: "Tuesday"})
 
@@ -90,14 +40,13 @@ export default function Application(props) {
       axios.get("/api/interviewers")
     ])
     .then(all => {
-
-  
       
       setState(prev => ({...prev, days: all[0].data, appointments: all[1].data, interviewers: all[2].data}))
     })
     .catch(err => console.log("caught error ---", err.message))
 
-  }, [])
+  }, []);
+  const dailyAppointments = getAppointmentsForDay(state, state.day);
 
   return (
     <main className="layout">
@@ -120,12 +69,16 @@ export default function Application(props) {
       <section className="schedule">
         <ul>
         {dailyAppointments.map((appointment) => {
-          console.log("in mapping of appointments in Application; ")
-
+          const interview = getInterview(state, appointment.interview);
+          //console.log("in mapping of appointments in Application; ")
           return (
           <Appointment 
             key={appointment.id}
-            {...appointment}
+            id={appointment.id}
+            time={appointment.time}
+            interview={interview}
+
+            //{...appointment}
             />
         )}
         )}    
