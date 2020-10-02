@@ -4,11 +4,11 @@ import axios from "axios";
 import DayList from "./DayList";
 //import InterviewerList from "./InterviewerList";
 import Appointment from "./Appointment/index";
-import {getAppointmentsForDay, getInterview} from "../helpers/selectors";
+import {getAppointmentsForDay, getInterview, getInterviewersForDay} from "../helpers/selectors";
 
 import "components/Application.scss";
 
-axios.defaults.baseURL = "http://localhost:8001"
+//axios.defaults.baseURL = "http://localhost:8001"
 
 
 
@@ -20,6 +20,7 @@ export default function Application(props) {
     day: "Monday",
     days: [],
     interviewers: [],
+    message:""
   })
   
   
@@ -28,8 +29,38 @@ export default function Application(props) {
 
   const setDay = day => setState({...state, day});
   //const setDays = days => setState(prev => ({...prev, days}));
-
   //const [selectedInterviewer, setSelectedInterviewer] = useState(interviewers[2].name);
+
+  const dailyAppointments = getAppointmentsForDay(state, state.day);
+  const dailyInterviewers = getInterviewersForDay(state, state.day);
+  
+  function bookInterview(id, interview) { //this function will change the local state --> what id?
+    console.log(id, interview);
+    
+    setState({...state, message: "Saving"})
+    
+    const appointment = {//creating a new appointment object once (interview is) booked.
+      ...state.appointments[id], //make a copy of everything from a certain appointment
+      interview: { ...interview } //make a copy of the argument "interview", replace the current interview value(null) in the appointment with it(now booked so it's an object)
+    };
+
+    const appointments = { //update the whole appointments state after updating that single appointment 
+      ...state.appointments, //again, make a copy
+      [id]: appointment   //only update the one with the matching key (the one that's booked)
+    };
+
+    return axios.put(`/api/appointments/${appointment.id}`, {interview})
+    .then(() => {
+      setState({...state, appointments});
+    })
+    
+  
+      
+    //; //copy the state object, add the appointments state 
+  
+
+  }
+
 
   useEffect(() => {
 
@@ -46,7 +77,7 @@ export default function Application(props) {
     .catch(err => console.log("caught error ---", err.message))
 
   }, []);
-  const dailyAppointments = getAppointmentsForDay(state, state.day);
+  
 
   return (
     <main className="layout">
@@ -77,6 +108,9 @@ export default function Application(props) {
             id={appointment.id}
             time={appointment.time}
             interview={interview}
+            interviewers={dailyInterviewers}
+            bookInterview={bookInterview}
+            message={state.message} 
 
             //{...appointment}
             />
