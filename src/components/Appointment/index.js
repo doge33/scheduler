@@ -8,6 +8,7 @@ import Empty from "./Empty";
 import Form from "./Form";
 import Status from "./Status";
 import Confirm from "./Confirm";
+import Error from "./Error";
 
  
 export default function Appointment(props) {
@@ -19,6 +20,8 @@ export default function Appointment(props) {
   const DELETING = "DELETING";
   const CONFIRM = "CONFIRMING";
   const EDIT = "EDIT";
+  const ERROR_SAVE = "ERROR_SAVE";
+  const ERROR_DELETE = "ERROR_DELETE";
 
 
   const {mode, transition, back} = useVisualMode(
@@ -35,7 +38,10 @@ export default function Appointment(props) {
 
   props.bookInterview(props.id, interview) //the purpose is to update the database
   .then(() => transition(SHOW))
-  .catch(err =>err.message )
+  .catch(err => {
+    console.log("Error message:~~~", err);
+    transition(ERROR_SAVE, true)
+  } )
   //.then(()=>{
     
   //}) //appointment id and newly created interview with student name + interview object
@@ -43,9 +49,6 @@ export default function Appointment(props) {
   }
 
   function deleteAppointment(interview) {
-    console.log("before transition to CONFIRM mode")
-    //transition(CONFIRM);
-    console.log("after transition to CONFIRM mode")
 
     transition(DELETING); //this line is important(don't know if for the right reason tho?? deleting it would break code)
     interview = null;
@@ -55,7 +58,10 @@ export default function Appointment(props) {
         .then(() => {
           console.log("after axios.delete, inside deleteAppointment function; props is: -----", props)
           transition(EMPTY)})
-        .catch(err => err.message);
+        .catch(err => {
+          console.log("Error message:~~~", err);
+          transition(ERROR_DELETE, true)
+        });
   
     
   }
@@ -75,6 +81,11 @@ export default function Appointment(props) {
       {mode === SAVING && <Status message={props.message} />}
 
       {mode === DELETING && <Status message={props.message} />}
+
+      {mode === ERROR_DELETE && <Error message={"Something wrong!"} />}
+      {mode === ERROR_SAVE && <Error message={"Can't Save the appointment!"} />}
+
+
 
       {mode === CREATE &&  
         <Form

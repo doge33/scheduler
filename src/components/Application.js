@@ -52,8 +52,8 @@ export default function Application(props) {
     return axios.put(`/api/appointments/${appointment.id}`, {interview}) //return promise to be handled in appointment component
     .then(() => {
       setState({...state, appointments});
-      
     })
+    .catch(err => console.log(err.message))
   }
 
   function cancelInterview(id, interview){
@@ -75,6 +75,7 @@ export default function Application(props) {
     setState({...state, appointments}) //==> adding this broke my code. WHY?
       console.log("axios.delete success")
     })
+    .catch(err => console.log(err.message))
      
 
   }
