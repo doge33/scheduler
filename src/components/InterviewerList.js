@@ -4,16 +4,16 @@ import "components/InterviewerList.scss";
 
 export default function InterviewerList(props) {
 
-  console.log("inside InterviewerList, the PROPS object is", props);
+  //console.log("inside InterviewerList, the PROPS object is", props);
 
 
       return (
-      <section className="interviewers">
+      <section className="interviewers"> 
         <h4 className="interviewers__header text--light">Interviewer</h4>
         <ul className="interviewers__list">
           {props.interviewers.map((interviewer) => {
 
-            console.log("in map of InterviewerList; props.interviewer is---", props.interviewer)
+            //console.log("in map of InterviewerList; the current interviewer ID is " + interviewer.id + ", AND props.interviewer is " + props.value)
 
             return (
               <InterviewerListItem

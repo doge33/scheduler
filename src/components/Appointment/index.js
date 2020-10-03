@@ -7,6 +7,7 @@ import Show from "./Show";
 import Empty from "./Empty";
 import Form from "./Form";
 import Status from "./Status";
+import Confirm from "./Confirm";
 
  
 export default function Appointment(props) {
@@ -16,6 +17,8 @@ export default function Appointment(props) {
   const CREATE = "CREATE";
   const SAVING = "SAVING";
   const DELETING = "DELETING";
+  const CONFIRM = "CONFIRMING";
+  const EDIT = "EDIT";
 
 
   const {mode, transition, back} = useVisualMode(
@@ -37,17 +40,41 @@ export default function Appointment(props) {
     
   //}) //appointment id and newly created interview with student name + interview object
 
+  }
+
+  function deleteAppointment(interview) {
+    console.log("before transition to CONFIRM mode")
+    //transition(CONFIRM);
+    console.log("after transition to CONFIRM mode")
+
+    transition(DELETING); //this line is important(don't know if for the right reason tho?? deleting it would break code)
+    interview = null;
+    
+  
+    props.cancelInterview(props.id, interview)
+        .then(() => {
+          console.log("after axios.delete, inside deleteAppointment function; props is: -----", props)
+          transition(EMPTY)})
+        .catch(err => err.message);
+  
     
   }
 
-console.log("the props.message being passed into appointment component is", props.message)
+  
+  
+  
+  //console.log("the props.message being passed into appointment component is", props.message)
   return(
     <article className="appointment">
       <Header time={props.time}/>
 
       {mode === EMPTY && <Empty onAdd={() => transition(CREATE)} />}
 
+      {mode === CONFIRM && <Confirm message="Delete the appointment?" onConfirm={deleteAppointment} onCancel={() => back()}/>}
+
       {mode === SAVING && <Status message={props.message} />}
+
+      {mode === DELETING && <Status message={props.message} />}
 
       {mode === CREATE &&  
         <Form
@@ -58,12 +85,25 @@ console.log("the props.message being passed into appointment component is", prop
         />
       }
 
+      {mode === EDIT &&  
+        <Form
+          interviewers={props.interviewers}
+          name={props.interview.student}
+          interviewer={props.interview.interviewer.id}
+          onCancel={() => back()}
+          onSave={save}
+          
+        />
+      }
+
+
       {mode === SHOW && 
         <Show 
           student={props.interview.student}
           //interviewer={props.interview.interviewer}
-          onEdit={props.onEdit}
-          onDelete={props.onDelete}
+          onEdit={() => transition(EDIT)}
+          //onDelete={props.onDelete}
+          onDelete={() => transition(CONFIRM)}
           interview={props.interview}
         />
         }

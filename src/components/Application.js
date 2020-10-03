@@ -36,7 +36,7 @@ export default function Application(props) {
   
   function bookInterview(id, interview) { //this function will change the local state --> what id?
     console.log(id, interview);
-    
+
     setState({...state, message: "Saving"})
     
     const appointment = {//creating a new appointment object once (interview is) booked.
@@ -49,15 +49,33 @@ export default function Application(props) {
       [id]: appointment   //only update the one with the matching key (the one that's booked)
     };
 
-    return axios.put(`/api/appointments/${appointment.id}`, {interview})
+    return axios.put(`/api/appointments/${appointment.id}`, {interview}) //return promise to be handled in appointment component
     .then(() => {
       setState({...state, appointments});
-    })
-    
-  
       
-    //; //copy the state object, add the appointments state 
-  
+    })
+  }
+
+  function cancelInterview(id, interview){
+    console.log("in cancelInterview in App: id & interview is---", id, interview);
+    setState({...state, message: "Deleting"})
+
+    const appointment = {
+      ...state.appointments[id],
+      interview: {...interview}
+    }
+
+    const appointments = {
+      ...state.appointments,
+      [id]: appointment
+    }
+
+    return axios.delete(`/api/appointments/${appointment.id}`, {interview})
+    .then(() => {
+    setState({...state, appointments}) //==> adding this broke my code. WHY?
+      console.log("axios.delete success")
+    })
+     
 
   }
 
@@ -110,7 +128,11 @@ export default function Application(props) {
             interview={interview}
             interviewers={dailyInterviewers}
             bookInterview={bookInterview}
+            cancelInterview={cancelInterview}
             message={state.message} 
+            
+            
+            
 
             //{...appointment}
             />
