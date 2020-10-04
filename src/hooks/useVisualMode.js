@@ -10,22 +10,48 @@ export default function useVisualMode(initialVal) {
 
     const historyCopy = [...history];
 
-    //console.log("inside transition; history BEFORE transition is ---", history)
-    if(replace) {
+    setMode(newMode);
+    if (replace) {
+      
+      historyCopy[historyCopy.length- 1] = newMode;
 
-      historyCopy[historyCopy.length - 1] = newMode; //directly mutate the last mode in history, eg. 2 in [1,2] to become the new mode, eg. 3
-      setMode(newMode);
-      setHistory(historyCopy); //the history, eg. [1,2] is now the one with the mutated last-item , eg. [1,3]
+      setHistory(historyCopy);
 
     } else {
+      //setHistory([...history, newMode]);
+      history.push(newMode)   // ==> how to avoid this???
+      setHistory(history);
+    } 
+  }
+
+
+    /*
+    console.log("inside transition; history BEFORE transition is ---", history)
+    if(replace) {
+
+      console.log("inside replace === true")
+      console.log("newMode is--", newMode)
+      const historyCopy = history.slice(0, history.length - 1)
+
+      //historyCopy[historyCopy.length - 1] = newMode; //directly mutate the last mode in history, eg. 2 in [1,2] to become the new mode, eg. 3
       setMode(newMode);
-      const newHistory = [...historyCopy, newMode] //push item to history array
-      setHistory(newHistory)
+      setHistory(() => ([...historyCopy, newMode])) // => gives [empty, error_save]
+      //setHistory((prev) => [...prev, newMode]) //=>gives [empty, create, saving, error_save]
+
+
+    } else {
+      console.log("inside replace === false")
+
+      console.log("newMode is--", newMode)
+      setMode(newMode);
+      //const newHistory = [...historyCopy, newMode] //push item to history array
+      //)
+      setHistory(prev => ([...prev, newMode]))
     }
 
     //console.log("inside transition; history AFTER transition is ---", newHistory)
   }
-
+*/
   const back = () => {
     //console.log("inside back; history BEFORE back is ---", history)
 
@@ -33,9 +59,9 @@ export default function useVisualMode(initialVal) {
 
       const newHistory = history.slice(0, history.length - 1)
       
-      setMode(newHistory[newHistory.length - 1 ]); //an item of the array
+      setMode(newHistory[newHistory.length - 1 ]); //last item of the array
       
-      setHistory(newHistory)
+      setHistory(() => newHistory)
     }    
     //console.log("inside back; history AFTER back is ---", history)
   }

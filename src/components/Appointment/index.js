@@ -34,32 +34,33 @@ export default function Appointment(props) {
       interviewer
     };
   
-  transition(SAVING)
+  transition(SAVING) //=> WHEN YOU ARE HERE, the history before is the same as when you are in line 47 => [EMPTY, CREATE]
 
   props.bookInterview(props.id, interview) //the purpose is to update the database
-  .then(() => transition(SHOW))
+  .then(() => {
+    console.log("before transition to SHOW");
+    transition(SHOW)
+  })
   .catch(err => {
-    console.log("Error message:~~~", err);
+    //console.log("~~~~~~inside CATCH in save; Error message:~~~", err);
+    console.log("before transition to ERROR_SAVE, true")
     transition(ERROR_SAVE, true)
   } )
-  //.then(()=>{
-    
-  //}) //appointment id and newly created interview with student name + interview object
 
   }
 
   function deleteAppointment(interview) {
 
-    transition(DELETING); //this line is important(don't know if for the right reason tho?? deleting it would break code)
+    transition(DELETING, true); //this line is important(don't know if for the right reason tho?? deleting it would break code)
     interview = null;
     
   
     props.cancelInterview(props.id, interview)
         .then(() => {
-          console.log("after axios.delete, inside deleteAppointment function; props is: -----", props)
+          console.log("~~~~~~~inside cancelInterview THEN; props is: -----", props)
           transition(EMPTY)})
         .catch(err => {
-          console.log("Error message:~~~", err);
+          console.log("~~~~~~~inside CATCH of cancelInterview; Error message:~~~", err);
           transition(ERROR_DELETE, true)
         });
   
@@ -78,12 +79,12 @@ export default function Appointment(props) {
 
       {mode === CONFIRM && <Confirm message="Delete the appointment?" onConfirm={deleteAppointment} onCancel={() => back()}/>}
 
-      {mode === SAVING && <Status message={props.message} />}
+      {mode === SAVING && <Status message="Saving" />}
 
-      {mode === DELETING && <Status message={props.message} />}
+      {mode === DELETING && <Status message="Deleting" />}
 
-      {mode === ERROR_DELETE && <Error message={"Something wrong!"} />}
-      {mode === ERROR_SAVE && <Error message={"Can't Save the appointment!"} />}
+      {mode === ERROR_DELETE && <Error message={"Can't delete the appointment!"} onClose={() => back()}/>}
+      {mode === ERROR_SAVE && <Error message={"Can't save the appointment!"} onClose={() => back()} />}
 
 
 
