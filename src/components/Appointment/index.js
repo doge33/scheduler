@@ -37,15 +37,8 @@ export default function Appointment(props) {
   transition(SAVING) //=> WHEN YOU ARE HERE, the history before is the same as when you are in line 47 => [EMPTY, CREATE]
 
   props.bookInterview(props.id, interview) //the purpose is to update the database
-  .then(() => {
-    console.log("before transition to SHOW");
-    transition(SHOW)
-  })
-  .catch(err => {
-    //console.log("~~~~~~inside CATCH in save; Error message:~~~", err);
-    console.log("before transition to ERROR_SAVE, true")
-    transition(ERROR_SAVE, true)
-  } )
+  .then(() => transition(SHOW))
+  .catch(err => transition(ERROR_SAVE, true));
 
   }
 
@@ -53,18 +46,10 @@ export default function Appointment(props) {
 
     transition(DELETING, true); //this line is important(don't know if for the right reason tho?? deleting it would break code)
     interview = null;
-    
-  
+
     props.cancelInterview(props.id, interview)
-        .then(() => {
-          console.log("~~~~~~~inside cancelInterview THEN; props is: -----", props)
-          transition(EMPTY)})
-        .catch(err => {
-          console.log("~~~~~~~inside CATCH of cancelInterview; Error message:~~~", err);
-          transition(ERROR_DELETE, true)
-        });
-  
-    
+        .then(() => transition(EMPTY))
+        .catch(err => transition(ERROR_DELETE, true));
   }
 
   

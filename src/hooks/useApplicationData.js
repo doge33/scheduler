@@ -45,7 +45,7 @@ export default function useApplicationData() {
  
   //updates the state locally & remotely when booking interview
   function bookInterview(id, interview) { //this function will change the local state --> what id?
-    
+
     const appointment = {//creating a new appointment object once (interview is) booked.
       ...state.appointments[id], //make a copy of everything from a certain appointment
       interview: { ...interview } //make a copy of the argument "interview", replace the current interview value(null) in the appointment with it(now booked so it's an object)
@@ -56,15 +56,11 @@ export default function useApplicationData() {
       [id]: appointment   //only update the one with the matching key (the one that's booked)
     };
 
-    const newDaysState = newDays([...state.days], interview);
+    //differentiate between EDIT Existing and BOOK NEW appointments: check if the interview in appointment already existed
+    const newDaysState = state.appointments[id].interview ? [...state.days] : newDays([...state.days], interview);
 
     return axios.put(`/api/appointments/${appointment.id}`, {interview}) //return promise to be handled in appointment component
-    .then(() => {
-
-      console.log("---- after put success; the current state.days is", state.days)
-      setState({...state, appointments, newDaysState});
-      //console.log("axios.put success")
-    })
+    .then(() => setState({...state, appointments, newDaysState}))
     .catch(err => {
       console.log(err.message);
       err.status(500).json({})
@@ -76,7 +72,7 @@ export default function useApplicationData() {
    
     const appointment = {
       ...state.appointments[id],
-      interview: {...interview}
+      interview: null
     }
 
     const appointments = {
@@ -85,14 +81,11 @@ export default function useApplicationData() {
     }
 
     const newDaysState = newDays([...state.days], interview);
-
+    
     return axios.delete(`/api/appointments/${appointment.id}`, {interview})
-    .then((res) => {
-      setState({...state, appointments, newDaysState}) 
-      //console.log("axios.delete success")
-    })
+    .then((res) => setState({...state, appointments, newDaysState}))
     .catch(err => {
-      //console.log(err.message)
+      console.log(err.message)
       err.status(500).json({})
     })
   }
