@@ -8,19 +8,17 @@ export default function useVisualMode(initialVal) {
 
   const transition = (newMode, replace = false) => {
 
-    const historyCopy = [...history];
+    //const historyCopy = [...history];
 
     setMode(newMode);
     if (replace) {
-      
-      historyCopy[historyCopy.length- 1] = newMode;
 
-      setHistory(historyCopy);
+      setHistory(prev => [...prev.slice(0, prev.length - 1), newMode])
 
     } else {
       //setHistory([...history, newMode]);
-      history.push(newMode)   // ==> how to avoid this???
-      setHistory(history);
+      //istory.push(newMode)   // ==> how to avoid this???
+      setHistory(prev => [...prev, newMode]);
     } 
   }
 

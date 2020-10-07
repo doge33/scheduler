@@ -19,9 +19,7 @@
     "storybook": "start-storybook -p 9009 -s public --ci",
     "build-storybook": "build-storybook -s public"
   },
-  
   "proxy": "http://localhost:8001",
-
   "browserslist": {
     "production": [
       ">0.2%",
@@ -41,10 +39,11 @@
     "@storybook/addon-links": "^5.0.10",
     "@storybook/addons": "^5.0.10",
     "@storybook/react": "^5.0.10",
-    "@testing-library/jest-dom": "^4.0.0",
+    "@testing-library/jest-dom": "^4.2.4",
     "@testing-library/react": "^8.0.7",
     "babel-loader": "^8.0.5",
     "node-sass": "^4.11.0",
+    "prop-types": "^15.7.2",
     "react-test-renderer": "^16.9.0"
   },
   "jest": {

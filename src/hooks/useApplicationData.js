@@ -33,22 +33,36 @@ export default function useApplicationData() {
 
   }, []);
 
+  
+  //function that manages spots remaning features; returns the new Days state to be updated to
+  const newDays = function(days, interview) {
 
+    const currentDay = days.find(singleDay => singleDay.name === state.day)
+    //check if the appointment in question has interview === null
+    interview ? currentDay.spots -= 1 : currentDay.spots += 1;
+    return days
+  }
+ 
+  //updates the state locally & remotely when booking interview
   function bookInterview(id, interview) { //this function will change the local state --> what id?
     
     const appointment = {//creating a new appointment object once (interview is) booked.
       ...state.appointments[id], //make a copy of everything from a certain appointment
       interview: { ...interview } //make a copy of the argument "interview", replace the current interview value(null) in the appointment with it(now booked so it's an object)
     };
-
+    
     const appointments = { //update the whole appointments state after updating that single appointment 
       ...state.appointments, //again, make a copy
       [id]: appointment   //only update the one with the matching key (the one that's booked)
     };
 
+    const newDaysState = newDays([...state.days], interview);
+
     return axios.put(`/api/appointments/${appointment.id}`, {interview}) //return promise to be handled in appointment component
     .then(() => {
-      setState({...state, appointments});
+
+      console.log("---- after put success; the current state.days is", state.days)
+      setState({...state, appointments, newDaysState});
       //console.log("axios.put success")
     })
     .catch(err => {
@@ -57,6 +71,7 @@ export default function useApplicationData() {
     })
   }
 
+  //updates the state locally & remotely when cancelling interview
   function cancelInterview(id, interview){
    
     const appointment = {
@@ -69,9 +84,11 @@ export default function useApplicationData() {
       [id]: appointment
     }
 
+    const newDaysState = newDays([...state.days], interview);
+
     return axios.delete(`/api/appointments/${appointment.id}`, {interview})
     .then((res) => {
-      setState({...state, appointments}) //==> adding this broke my code. WHY?
+      setState({...state, appointments, newDaysState}) 
       //console.log("axios.delete success")
     })
     .catch(err => {

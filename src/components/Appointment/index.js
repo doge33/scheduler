@@ -72,7 +72,7 @@ export default function Appointment(props) {
   
   //console.log("the props.message being passed into appointment component is", props.message)
   return(
-    <article className="appointment">
+    <article className="appointment" data-testid="appointment">
       <Header time={props.time}/>
 
       {mode === EMPTY && <Empty onAdd={() => transition(CREATE)} />}

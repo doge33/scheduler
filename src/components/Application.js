@@ -21,6 +21,8 @@ export default function Application(props) {
     cancelInterview
   } = useApplicationData();
 
+  //console.log("before changing spots; state.days is ~~~", state.days)
+
 
   const dailyAppointments = getAppointmentsForDay(state, state.day);
   const dailyInterviewers = getInterviewersForDay(state, state.day);
@@ -51,12 +53,12 @@ export default function Application(props) {
           return (
           <Appointment 
             key={appointment.id}
-            {...appointment} //including name and time
+            {...appointment} //including (name and) time
             interview={interview}
             interviewers={dailyInterviewers}
             bookInterview={bookInterview}
             cancelInterview={cancelInterview}
-            message={state.message} />
+             />
         )}
         )}
         <Appointment key="last" time="5pm" />    
