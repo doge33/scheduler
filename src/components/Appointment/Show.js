@@ -1,10 +1,6 @@
 import React from "react";
 
 export default function Show(props) {
-  //console.log("props that are passed to SHOW are:---", props);
-  //console.log("props.interview is ---", props.interview);
-  //console.log("props.interview.interviewer is ---", props.interview.interviewer);
-  const defaultName = "default interviewer name";
 
   return (
     <main className="appointment__card appointment__card--show">
@@ -27,13 +23,11 @@ export default function Show(props) {
             className="appointment__actions-button"
             src="images/trash.png"
             alt="Delete"
-            onClick={() => props.onDelete(props.interview)}
+            onClick={() => props.onDelete()}
           />
         </section>
       </section>
     </main>
 
-  )
-}
-//original line 13 is this:
-//<h3 className="text--regular">{props.interview ? props.interview.interviewer.name: props.interviewer.name}</h3>
+  );
+};
