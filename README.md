@@ -1,4 +1,6 @@
 # Interview Scheduler
+This single-page application built with React allows lighthouse labs students to book appointments with interviewers, edit name and change selection of interviewer after booking, or cancel interviews. 
+This project is developed utilizing tools such as storybook, Webpack Dev Server, Babel, Jest, as well as Cypress for End-to-End testing.
 
 ## Setup
 
