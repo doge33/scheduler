@@ -1,30 +1,26 @@
 import React from "react";
 import axios from "axios";
 import { render, cleanup, screen, waitForElement, fireEvent, getByText, getByTestId, getAllByTestId, prettyDOM, getByAltText, getByPlaceholderText, getNodeText, waitForElementToBeRemoved, queryByText } from "@testing-library/react";
-
 import Application from "components/Application";
 
-afterEach(cleanup);
 
 describe("Application", () => {
+  
+  beforeEach(() => cleanup);
+  
 
-//this is async!
   it("defaults to Monday and changes the schedule when a new day is selected", async() => {
 
     const {getByText} = render(<Application />);
 
-    //wait for getByText to find the first element that contains text "Monday"
-    //returns a promise! This promise resolves when the callback getByText("Monday") returns a truthy value; reject after a timeout.
-    //only when this promise either resolves OR rejects will JEST continue the test. 
-    await waitForElement(() => getByText("Monday")) // async/await replaced the return waitForElement.... .then 
+    await waitForElement(() => getByText("Monday"))
     fireEvent.click(getByText("Tuesday"))
     expect(getByText("Leopold Silvers")).toBeInTheDocument();
     
   });
 
-  xit("loads data, books an interview and reduces the spots remaining for the first day by 1", async() => {
-
-    const {container, debug} = render(<Application />); //container represents the DOM that we are working with. the return by render is automatically scoped to the document.body
+  it("loads data, books an interview and reduces the spots remaining for the first day by 1", async() => {
+    const {container, debug} = render(<Application />);
     
     await waitForElement(() => getByText(container, "Archie Cohen"));
     
@@ -36,7 +32,6 @@ describe("Application", () => {
     fireEvent.change(getByPlaceholderText(appointment, /Enter Student Name/i), {
       target: {value: "Lydia Miller-Jones"}
     })
-
 
     fireEvent.click(getByAltText(appointment, "Sylvia Palmer"));
     fireEvent.click(getByText(appointment, "Save"));
@@ -50,15 +45,13 @@ describe("Application", () => {
     expect(getByAltText(appointment, "Delete")).toBeInTheDocument();
 
     const days = getAllByTestId(container, "day");
-    const day = days.find(day => queryByText(day, "Monday")); //this gives you the specific <li> node that contains "Monday"
+    const day = days.find(day => queryByText(day, "Monday")); 
 
-    //getByText to find "no spots remaining" wont work here, as in the DayListItem, the text is actually conditionally rendered/broken into many places.
-    const text = getNodeText(day.querySelector("h3"));
-
-    expect(text).toBe("no spots remaining");
+    expect(getByText(day, "no spots remaining")).toBeInTheDocument();
+    
   });
 
-  xit("loads data, cancels an interview and increases the spots remaining for Monday by 1", async () => {
+  it("loads data, cancels an interview and increases the spots remaining for Monday by 1", async () => {
     // 1. Render the Application.
     const { container, debug } = render(<Application />);
   
@@ -68,16 +61,15 @@ describe("Application", () => {
     // 3. Click the "Delete" button on the booked appointment.
     const appointments = getAllByTestId(container, "appointment");
     const appointment = appointments.find(appointment => queryByText(appointment, "Archie Cohen"));
-
-    //debug(appointment);
+  
     fireEvent.click(getByAltText(appointment, "Delete"));
-
+  
     // 4. Check that the confirm mode is displayed, containing the text "Delete the appointment?"
     expect(getByText(appointment, "Delete the appointment?")).toBeInTheDocument();
-
+  
     // 5. Click the "Confirm" button to delete
     fireEvent.click(getByText(appointment, "Confirm"));
-
+  
     // 6. Check that the element with the text "Deleting" is displayed.
     expect(getByText(appointment, "Deleting")).toBeInTheDocument();
     // 7. Wait until the "Deleting" element goes away
@@ -87,18 +79,15 @@ describe("Application", () => {
     expect(getByAltText(appointment, "Add")).toBeInTheDocument();
     // 9. Check that the DayListItem with the text "Monday" also has the text "2 spots remaining".
     const days = getAllByTestId(container, "day");
-    const day = days.find(day => queryByText(day, "Monday")); //this gives you the specific <li> node that contains "Monday"
+    const day = days.find(day => queryByText(day, "Monday")); 
 
-    //getByText to find "no spots remaining" wont work here, as in the DayListItem, the text is actually conditionally rendered/broken into many places.
-    const text = getNodeText(day.querySelector("h3"));
-
-    console.log(text);
-    expect(text).toBe("2 spots remaining");
-
-    debug();
+    expect(getByText(day, "2 spots remaining")).toBeInTheDocument();
+  
+    
   });
+  
 
-  it ("loads data, edits an interview and keeps the spots remaining for Monday the same", async() => {
+  it("loads data, edits an interview and keeps the spots remaining for Monday the same", async() => {
 
     // 1. Render the Application.
     const {container, debug} = render(<Application />)
@@ -132,7 +121,6 @@ describe("Application", () => {
     expect(getByText(appointment, "Lydia Miller-Jones")).toBeInTheDocument();
     expect(getByText(appointment, "Sylvia Palmer")).toBeInTheDocument();
 
-    //debug(appointment);
     // 8. Check that the DayListItem with the text "Monday" also has the text "1 spots remaining".
     const days = getAllByTestId(container, "day");
     const day = days.find(day => queryByText(day, "Monday")); 
@@ -143,8 +131,7 @@ describe("Application", () => {
 
   it("shows the save error when failing to save an appointment", async() => {
 
-    const {container, debug} = render(<Application />); //container represents the DOM that we are working with. the return by render is automatically scoped to the document.body
-    axios.put.mockRejectedValueOnce();
+    const {container, debug} = render(<Application />); 
     
     await waitForElement(() => getByText(container, "Archie Cohen"));
     
@@ -173,7 +160,7 @@ describe("Application", () => {
   
 
   it("shows the delete error when failing to delete an appointment", async() => {
-    const {container, debug} = render(<Application />); //container represents the DOM that we are working with. the return by render is automatically scoped to the document.body
+    const {container, debug} = render(<Application />); 
     axios.delete.mockRejectedValueOnce();
 
     await waitForElement(() => getByText(container, "Archie Cohen"));

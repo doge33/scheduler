@@ -40,7 +40,6 @@ describe("Form", () => {
     fireEvent.click(button);
 
     expect(getByText(/student name cannot be blank/i)).toBeInTheDocument();
-
     expect(mockOnSave).not.toHaveBeenCalled();
   });
   
@@ -69,7 +68,7 @@ describe("Form", () => {
   
   it("calls onCancel and resets the input field", () => {
     const onCancel = jest.fn();
-    const {container,getByText, getByPlaceholderText, queryByText } = render(
+    const {getByText, getByPlaceholderText, queryByText } = render(
       <Form
         interviewers={interviewers}
         name="Lydia Mill-Jones"
@@ -77,12 +76,11 @@ describe("Form", () => {
         onCancel={onCancel}
       />
     );
-    //console.log(prettyDOM(container))
-    // 
+
     fireEvent.click(getByText("Save"));
   
     fireEvent.change(getByPlaceholderText("Enter Student Name"), {
-      target: { value: "Lydia Miller-Jones" } //this 2nd argument indicates the element that the event was dispatched from => so the input element
+      target: { value: "Lydia Miller-Jones" } 
     });
   
     fireEvent.click(getByText("Cancel"));

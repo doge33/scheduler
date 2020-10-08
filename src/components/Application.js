@@ -1,32 +1,24 @@
 import React from "react";
-//import axios from "axios";
-
 import DayList from "./DayList";
-//import InterviewerList from "./InterviewerList";
 import Appointment from "./Appointment/index";
 import {getAppointmentsForDay, getInterview, getInterviewersForDay} from "../helpers/selectors";
 import useApplicationData from "hooks/useApplicationData";
 import "components/Application.scss";
 
-//axios.defaults.baseURL = "http://localhost:8001"
-
-
-
-export default function Application(props) {
-
+export default function Application() {
+//-------------------initial state is set---------------
   const {
     state,
     setDay,
     bookInterview,
     cancelInterview
-  } = useApplicationData();
+  } = useApplicationData(); 
 
-  //console.log("before changing spots; state.days is ~~~", state.days)
-
-
+  //---------------get necessary daily appointment & interviewers data from state
   const dailyAppointments = getAppointmentsForDay(state, state.day);
   const dailyInterviewers = getInterviewersForDay(state, state.day);
 
+  //render 2 components DayList & list of Appointment
   return (
     <main className="layout">
       <section className="sidebar">
@@ -61,10 +53,10 @@ export default function Application(props) {
              />
         )}
         )}
-        <Appointment key="last" time="5pm" />    
+        <Appointment key="last" time="5pm" />   
         </ul>
       </section>
     </main>
   );
-}
+};
 
